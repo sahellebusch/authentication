@@ -19,11 +19,11 @@ func main() {
 		c.Next()
 	})
 
-	router.GET("/status", controllers.Ping)
+	router.GET("/status", controllers.AreWeGood)
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/user", controllers.GetUser)
+		v1.GET("/user", controllers.GetUsers)
 	}
 
 	router.Run() // listen and serve on 0.0.0.0:8080
