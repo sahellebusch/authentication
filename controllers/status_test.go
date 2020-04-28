@@ -8,7 +8,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestStatusRoute(t *testing.T) {
@@ -26,7 +25,7 @@ func TestStatusRoute(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/status", nil)
 		router.ServeHTTP(w, req)
 
-		assert.Equal(t, 200, w.Code)
-		assert.Equal(t, "{\"status\":\"we good\"}", w.Body.String())
+		So(w.Code, ShouldEqual, 200)
+		So(w.Body.String(), ShouldEqual,"{\"status\":\"we good\"}" )
 	})
 }

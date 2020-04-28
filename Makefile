@@ -12,9 +12,12 @@ BINARY=authentication
 .PHONY: test clean
 
 ## Builds package
-build: lint vet fmt
+build: lint vet fmt tidy
 	go build authentication.go
 
+## Cleans up go modules
+tidy:
+	go mody tidy
 ## Run the tests
 test: 
 	GO_ENV=test go test -v ./controllers
