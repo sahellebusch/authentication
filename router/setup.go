@@ -2,14 +2,19 @@ package router
 
 import (
 	"authentication/controllers"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
 
 func SetupRouter(db *gorm.DB) *gin.Engine {
 	router := gin.New() // if you use Default and add middleware, it'll print twice
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+
+	if os.Getenv("GO_ENV") != "test" {
+		router.Use(gin.Logger())
+		router.Use(gin.Recovery())
+	}
 
 	router.Use(func(c *gin.Context) {
 		c.Set("db", db)

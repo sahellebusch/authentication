@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"authentication/models"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"net/http"
 )
 
 func GetUsers(c *gin.Context) {

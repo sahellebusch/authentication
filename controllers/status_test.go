@@ -1,12 +1,13 @@
-package test
+package controllers_test
 
 import (
 	"authentication/router"
-	"github.com/jinzhu/gorm"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStatusRoute(t *testing.T) {

@@ -5,41 +5,43 @@ RESET  := $(shell tput -Txterm sgr0)
 TARGET_MAX_CHAR_NUM=30
 ENV ?= dev
 
- # Go parameters	
-GOCMD=go	
-GOBUILD=$(GOCMD) build
-GOCLEAN=$(GOCMD) clean
-GOTEST=$(GOCMD) test
-GOGET=$(GOCMD) get
-GOFMT=$(GOCMD) fmt
-BINARY_NAME=main
 SQLITEDB=test.db
 MAIN=authentication.go
+BINARY=authentication
 
 .PHONY: test clean
 
 ## Builds package
-build: 
-	$(GOBUILD) $(MAIN)
+build: lint vet fmt
+	go build authentication.go
 
 ## Run the tests
 test: 
-	$(GOTEST) ./...
+	GO_ENV=test go test -v ./controllers
 
 ## Clean dev environment
-clean: 
-	$(GOCLEAN)
-	rm -f $(BINARY_NAME)
+clean:
+	go clean
+	rm -f $(BINARY)
 	rm -f $(SQLITEDB)
 
 ## Formats all files
 fmt:
-	$(GOFMT) ./...
+	gofmt -w ./
+
+## Runs govet on code
+vet:
+	go vet
+
+##n Lints the code
+lint:
+	golint -set_exit_status
 
 ## Runs authentication server
 run:
-	$(GOBUILD) main.go
-	./$(BINARY_NAME)
+	go build $(MAIN)
+	chmod u+x $(BINARY)
+	./$(BINARY)
 
 help:
 	@echo ''
