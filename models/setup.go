@@ -13,9 +13,5 @@ func SetupModels() *gorm.DB {
 	}
 
 	db.AutoMigrate(&User{})
-
-	db.Create(&User{Username: "jimcarey", Password: "legend"})
-	db.Create(&User{Username: "santaclause", Password: "northpole"})
-
 	return db
 }

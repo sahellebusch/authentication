@@ -17,7 +17,7 @@ build: lint vet fmt tidy
 
 ## Cleans up go modules
 tidy:
-	go mody tidy
+	go mod tidy
 ## Run the tests
 test: 
 	GO_ENV=test go test -v ./controllers

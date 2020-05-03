@@ -26,6 +26,6 @@ func TestStatusRoute(t *testing.T) {
 		router.ServeHTTP(w, req)
 
 		So(w.Code, ShouldEqual, 200)
-		So(w.Body.String(), ShouldEqual,"{\"status\":\"we good\"}" )
+		So(w.Body.String(), ShouldEqual, "{\"status\":\"we good\"}")
 	})
 }
