@@ -1,4 +1,5 @@
 #!/usr/bin/env make
+
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
 RESET  := $(shell tput -Txterm sgr0)
@@ -41,7 +42,7 @@ lint:
 	golint -set_exit_status
 
 ## Runs authentication server
-run:
+run: clean
 	go build $(MAIN)
 	chmod u+x $(BINARY)
 	./$(BINARY)

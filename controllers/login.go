@@ -1,14 +1,17 @@
 package controllers
 
 import (
+	"authentication/models"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
-	"github.com/gbrlsnchs/jwt/v3"
-	"github.com/gin-gonic/gin"
-	"github.com/satori/go.uuid"
 	"net/http"
 	"time"
+
+	"github.com/gbrlsnchs/jwt/v3"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
 )
 
 type Credentials struct {
@@ -37,7 +40,7 @@ func sign(id uint, username string) (string, error) {
 	now := time.Now()
 	pl := LoginToken{
 		Payload: jwt.Payload{
-			Issuer:         "coolcat",
+			Issuer:         "theD00de",
 			Subject:        "login",
 			Audience:       jwt.Audience{},
 			ExpirationTime: jwt.NumericDate(now.Add(7 * 24 * time.Hour)),
@@ -59,9 +62,18 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	db := c.MustGet("db").(*gorm.DB)
+
+	var user models.User
+	if db.Where("username = ? AND password = ?", creds.Username, creds.Password).First(&user).RecordNotFound() {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Invalid username and password combination"})
+		return
+	}
+
 	token, err := sign(uint(1), "boom")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	response := &JWTResponse{JWT: token}
