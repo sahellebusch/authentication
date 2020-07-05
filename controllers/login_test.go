@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"authentication/models"
-	// "github.com/jinzhu/gorm"
 	"bytes"
 	"encoding/json"
 
@@ -18,9 +17,15 @@ import (
 // TestStatusRoute
 func TestLoginRoute(t *testing.T) {
 	db := models.SetupModels()
-	defer db.Close()
+
+	var testUser = &models.User{Password: "super", Username: "tomcollins"}
 	router := router.SetupRouter(db)
-	db.Create(&models.User{Password: "super", Username: "tomcollins"})
+	db.Create(testUser)
+
+	defer func() {
+		db.Delete(&testUser)
+		db.Close()
+	}()
 
 	Convey("Creates a new JWT token", t, func() {
 		creds, _ := json.Marshal(&controllers.Credentials{Username: "tomcollins", Password: "super"})
@@ -30,6 +35,7 @@ func TestLoginRoute(t *testing.T) {
 
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Header().Get("Content-Type"), ShouldEqual, "application/json; charset=utf-8")
+
 		var respJSON controllers.JWTResponse
 		json.Unmarshal([]byte(w.Body.String()), &respJSON)
 		So(respJSON.JWT, ShouldNotBeEmpty)
@@ -44,6 +50,7 @@ func TestLoginRoute(t *testing.T) {
 
 			So(w.Code, ShouldEqual, http.StatusBadRequest)
 			So(w.Body.String(), ShouldContainSubstring, "Error:Field validation for 'Username'")
+			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json; charset=utf-8")
 		})
 
 		Convey("With no password", func() {
@@ -54,6 +61,7 @@ func TestLoginRoute(t *testing.T) {
 
 			So(w.Code, ShouldEqual, http.StatusBadRequest)
 			So(w.Body.String(), ShouldContainSubstring, "Error:Field validation for 'Password'")
+			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json; charset=utf-8")
 		})
 	})
 
@@ -66,6 +74,7 @@ func TestLoginRoute(t *testing.T) {
 
 			So(w.Code, ShouldEqual, http.StatusForbidden)
 			So(w.Body.String(), ShouldContainSubstring, "Invalid username and password combination")
+			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json; charset=utf-8")
 		})
 
 		Convey("invalid password", func() {
@@ -76,6 +85,7 @@ func TestLoginRoute(t *testing.T) {
 
 			So(w.Code, ShouldEqual, http.StatusForbidden)
 			So(w.Body.String(), ShouldContainSubstring, "Invalid username and password combination")
+			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json; charset=utf-8")
 		})
 	})
 }
