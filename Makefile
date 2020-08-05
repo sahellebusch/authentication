@@ -1,4 +1,5 @@
 #!/usr/bin/env make
+
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
 RESET  := $(shell tput -Txterm sgr0)
@@ -17,7 +18,7 @@ build: lint vet fmt tidy
 
 ## Cleans up go modules
 tidy:
-	go mody tidy
+	go mod tidy
 ## Run the tests
 test: 
 	GO_ENV=test go test -v ./controllers
@@ -41,7 +42,7 @@ lint:
 	golint -set_exit_status
 
 ## Runs authentication server
-run:
+run: clean
 	go build $(MAIN)
 	chmod u+x $(BINARY)
 	./$(BINARY)
